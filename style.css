@@ -1,10 +1,26 @@
 input[type="number"] {
-    width: 50px;
-    font-size: 50px;
+    width: 51px;
+    font-size: 52px;
     text-align: center; 
 }
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
   margin: 0; 
+}
+
+.baseTable { 
+    text-align: center;
+    border-spacing:100px 0px; 
+} 
+
+caption {
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+#pencilMarks {
+    font-size: 15.5px;
+
 }
