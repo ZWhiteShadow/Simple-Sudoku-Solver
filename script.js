@@ -18,8 +18,6 @@ function baseTable(baseId, boxId) {
         table.appendChild(row);
     }
 };
-baseTable("inputTable", 0);
-baseTable("pencilMarks", 1);
 
 // https://code.sololearn.com/Wts7GD6e7wKZ/#html
 function fillTable(boxId, type) {
@@ -58,16 +56,16 @@ function fillTable(boxId, type) {
         }
     }
 }
-fillTable(0, "input");
-fillTable(1, "text");
 
 // https://www.daniweb.com/programming/web-development/threads/113340/delete-all-rows-from-table-in-javascript
-function clearTable() {
+function clearTable(boxId) {
     for (a = 1; a < 4; a++) {
         for (b = 0; b < 3; b++) {
-            var Parent = document.getElementById("" + a + b);
-            while (Parent.hasChildNodes()) {
-                Parent.removeChild(Parent.firstChild);
+            if (document.getElementById("" + a + b + boxId)) {
+                var Parent = document.getElementById("" + a + b + boxId);
+                while (Parent.hasChildNodes()) {
+                    Parent.removeChild(Parent.firstChild);
+                }
             }
         }
     }
@@ -83,11 +81,10 @@ function pencilMarks(type) {
                 for (var z = 0; z < 3; z++) {
                     totalBox++;
                     var col = document.createElement("td");
-                    if(type == "start"){
-                    col.innerHTML = "&nbsp" + totalBox + "&nbsp";
-                    }
-                    else if (type == "refresh"){
-                    col.innerHTML = "&nbsp" + 0 + "&nbsp";
+                    if (type == "start") {
+                        col.innerHTML = "&nbsp" + totalBox + "&nbsp";
+                    } else if (type == "refresh") {
+                        col.innerHTML = "&nbsp" + 0 + "&nbsp";
                     }
                     row.appendChild(col);
                 }
@@ -98,4 +95,19 @@ function pencilMarks(type) {
         }
     }
 }
-pencilMarks("start");
+
+function redrawTables() {
+
+    clearTable(0);
+    clearTable(1);
+
+    baseTable("inputTable", 0);
+    baseTable("pencilMarks", 1);
+
+    fillTable(0, "input");
+    fillTable(1, "text");
+
+    pencilMarks("start");
+
+}
+redrawTables();
