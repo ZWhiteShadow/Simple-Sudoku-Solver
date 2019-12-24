@@ -1,35 +1,49 @@
 // https://code.sololearn.com/Wts7GD6e7wKZ/#html
-function gameTable() {
-    var table = document.getElementById("masterTable");
-    for( var i = 0; i < 3; i++ ){
-        var row = document.createElement("tr");
-        for( var j = 0; j < 3; j++ ){
-            var col = document.createElement("td");
-            col.innerHTML = "<html id=\'" + i + j + "\'></html>";
-            row.appendChild(col);
+
+
+
+function createTable() {
+
+    let colNum = 0,
+        rowNum = 0;
+
+    for (var a = 1; a < 4; a++) {  //Select which boxes to work on 
+        for (var c = 0; c < 3; c++) { //Three rows at at time
+            
+            rowNum++;
+            for (var b = 0; b < 3; b++) {  //Finish individual row
+                var table = document.getElementById("" + a + b);
+                document.getElementById("" + a + b).setAttribute("style", "border: 3px solid black;"); //Change border to black
+                var row = document.createElement("tr");
+                for (var j = 1; j < 4; j++) {  //Create three boxes going accross
+                    colNum++;
+                    var col = document.createElement("td");
+
+                    var x = document.createElement("INPUT");
+                    x.setAttribute("type", "number"); 
+                    x.setAttribute("value", 0);
+                   row.appendChild(x);
+
+                    // col.innerHTML = "" + (rowNum - 1) + (colNum - 1);
+
+                    row.appendChild(col);
+                }
+                table.appendChild(row);
+            }
+            colNum = 0;
         }
-        table.appendChild(row);
     }
-};
+}
+createTable();
 
-// https://code.sololearn.com/Wts7GD6e7wKZ/#html
-window.onload = function() {
-    var table = document.getElementById("myTable2");
-    for( var i = 0; i < 10; i++ ){
-        var row = document.createElement("tr");
-        for( var j = 0; j < 10; j++ ){
-            var col = document.createElement("td");
-
-            var x = document.createElement("INPUT");
-             x.setAttribute("type", "number"); 
-             x.setAttribute("value", "" + i + j);
-            row.appendChild(x);
-
-            row.appendChild(col);
+// https://www.daniweb.com/programming/web-development/threads/113340/delete-all-rows-from-table-in-javascript
+function clearTable() {
+    for (a = 1; a < 4; a++) {
+        for (b = 0; b < 3; b++) {
+            var Parent = document.getElementById("" + a + b);
+            while (Parent.hasChildNodes()) {
+                Parent.removeChild(Parent.firstChild);
+            }
         }
-        table.appendChild(row);
     }
-};
-
-
-
+}

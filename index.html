@@ -1,12 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <title>Simple Suduko Solver</title>
-  </head>
-  <body>
-    <table id="myTable"></table>
-    <script src="script.js"></script>
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Simple Suduko Solver</title>
+</head>
+
+<body>
+  <table id="gameTable">
+    <tr>
+      <td id="10"></td>
+      <td id="11"></td>
+      <td id="12"></td>
+    </tr>
+    <tr class="border">
+      <td id="20"></td>
+      <td id="21"></td>
+      <td id="22"></td>
+    </tr>
+    <tr class="border">
+      <td id="30"></td>
+      <td id="31"></td>
+      <td id="32"></td>
+    </tr>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+
 </html>
