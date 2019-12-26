@@ -5,6 +5,24 @@ function limit(element) {
     }
 }
 
+var inputArray = [];
+for (i = 0; i < 9; i++) {
+    inputArray.push([0]);
+    for (j = 0; j < 9; j++) {
+    inputArray[i].push(0)
+    }
+}
+
+var pencilMarkArray = []
+for (i = 0; i < 10; i++) {
+    pencilMarkArray.push([0]);
+    for (j = 0; j < 10; j++) {
+        pencilMarkArray[i].push([1,2,3,4,5,6,7,8,9])
+    }
+}
+
+console.log(pencilMarkArray);
+
 // Create Overall Table
 function baseTable(baseId, boxId) {
     var table = document.getElementById(baseId);
@@ -40,7 +58,7 @@ function fillTable(boxId, type) {
                     if (type == "input") {
                         var x = document.createElement("INPUT");
                         x.setAttribute("type", "number");
-                        x.setAttribute("value", 0);
+                        x.setAttribute("value", "" + (colNum - 1) + (rowNum - 1));
                         x.setAttribute("onkeydown", "limit(this)")
                         x.setAttribute("onkeyup", "limit(this)")
                         row.appendChild(x);
@@ -61,7 +79,7 @@ function fillTable(boxId, type) {
 function clearTable(boxId) {
     for (a = 1; a < 4; a++) {
         for (b = 0; b < 3; b++) {
-            if (document.getElementById("" + a + b + boxId)) {
+            if (document.getElementById("" + a + b + boxId)) { //clear tables if they exist
                 var Parent = document.getElementById("" + a + b + boxId);
                 while (Parent.hasChildNodes()) {
                     Parent.removeChild(Parent.firstChild);
@@ -71,21 +89,19 @@ function clearTable(boxId) {
     }
 }
 
-function pencilMarks(type) {
+function pencilMarks() {
     var totalBox = 0;
-    for (i = 0; i < 9; i++) {
-        for (j = 0; j < 9; j++) {
+    for (i = 0; i < 9; i++) {         // 9 Down     
+        for (j = 0; j < 9; j++) {     // 9 Accorss (Does all nine across first
+                                      // Then goes on to the next row
+
             table = document.getElementById("" + i + j);
-            for (var y = 0; y < 3; y++) {
+            for (var y = 0; y < 3; y++) {                      // 3 Down
                 var row = document.createElement("tr");
-                for (var z = 0; z < 3; z++) {
+                for (var z = 0; z < 3; z++) {                 // 3 Across
                     totalBox++;
                     var col = document.createElement("td");
-                    if (type == "start") {
-                        col.innerHTML = "&nbsp" + totalBox + "&nbsp";
-                    } else if (type == "refresh") {
-                        col.innerHTML = "&nbsp" + 0 + "&nbsp";
-                    }
+                    col.innerHTML =  "&nbsp" + pencilMarkArray[j + 1][i + 1][totalBox - 1] + "&nbsp";
                     row.appendChild(col);
                 }
                 table.appendChild(row);
@@ -97,17 +113,13 @@ function pencilMarks(type) {
 }
 
 function redrawTables() {
-
     clearTable(0);
     clearTable(1);
-
     baseTable("inputTable", 0);
     baseTable("pencilMarks", 1);
-
-    fillTable(0, "input");
     fillTable(1, "text");
-
-    pencilMarks("start");
-
+    pencilMarks();
 }
+
 redrawTables();
+fillTable(0,"input")

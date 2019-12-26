@@ -3,6 +3,7 @@ input[type="number"] {
     font-size: 52px;
     text-align: center; 
 }
+
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
@@ -22,5 +23,6 @@ caption {
 
 #pencilMarks {
     font-size: 15.5px;
+    text-align: center;
 
 }
