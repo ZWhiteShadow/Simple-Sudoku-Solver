@@ -15,7 +15,7 @@ function change() {
     for (i = 0; i < 9; i++) {
         countArray[i] = [];
         for (j = 0; j < 9; j++) {
-            countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , true]);
         }
     }
 
@@ -72,31 +72,44 @@ function change() {
             for (col = 0; col < 9; col++) {
                 if (countArray[row][col][countArray[row][col][0]] > 3) {
                     document.getElementById("i" + row + col).style.color = "red";
+                    countArray[row][col][10] = false;
                 } else {
                     document.getElementById("i" + row + col).style.color = "black";
+                    countArray[row][col][10] = true;
                 }
 
             }
         }
 
-        console.log(countArray)
-        redrawTables();
+    }
+    
+        //save inputed numbers into an array
         for (i = 0; i < 9; i++) {
             for (j = 0; j < 9; j++) {
-                for (k = 1; k < 10; k++) {
-                    pencilMarkArray[i + 1][j + 1][k] = countArray[i][j][k]
+                countArray[i][j][0] = document.getElementById("i" + i + j).value;
+                for (x = 1; x < 10; x++) {
+                    if (countArray[i][j][0] > 0 && countArray[i][j][10]) {
+                        pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp";
+                    } else {
+                        if (countArray[i][j][x] > 0) {
+                            pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp"
+                        }
+                        else{
+                            pencilMarkArray[j + 1][i + 1][x] = x;
+                        }
+                    }
                 }
             }
-
         }
-    }
+        redrawTables()
+        console.log(countArray)
 }
 
 var pencilMarkArray = []
 for (i = 0; i < 10; i++) {
     pencilMarkArray.push([0]);
     for (j = 0; j < 9; j++) {
-        pencilMarkArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        pencilMarkArray[i].push([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     }
 }
 
