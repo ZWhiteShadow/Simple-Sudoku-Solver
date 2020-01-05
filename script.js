@@ -6,16 +6,16 @@ function limit(element) {
     if (element.value == 0) { //Don't accept 0!
         //element.value = "";
     }
-    change();
+    change(element.id.substr(1), element.value);
 }
 
-function change() {
+function change(id, value) {
 
     var countArray = []
     for (i = 0; i < 9; i++) {
         countArray[i] = [];
         for (j = 0; j < 9; j++) {
-            countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0 , true]);
+            countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
     }
 
@@ -68,41 +68,32 @@ function change() {
                 }
             }
         }
-        for (row = 0; row < 9; row++) {
-            for (col = 0; col < 9; col++) {
-                if (countArray[row][col][countArray[row][col][0]] > 3) {
-                    document.getElementById("i" + row + col).style.color = "red";
-                    countArray[row][col][10] = false;
-                } else {
-                    document.getElementById("i" + row + col).style.color = "black";
-                    countArray[row][col][10] = true;
-                }
-
-            }
-        }
-
     }
-    
-        //save inputed numbers into an array
-        for (i = 0; i < 9; i++) {
-            for (j = 0; j < 9; j++) {
-                countArray[i][j][0] = document.getElementById("i" + i + j).value;
-                for (x = 1; x < 10; x++) {
-                    if (countArray[i][j][0] > 0 && countArray[i][j][10]) {
-                        pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp";
+
+    for (i = 0; i < 9; i++) {
+        for (j = 0; j < 9; j++) {
+            countArray[i][j][0] = document.getElementById("i" + i + j).value;
+            for (x = 1; x < 10; x++) {
+                if (countArray[i][j][countArray[i][j][0]] == 3)  {
+                    pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp";
+                } else {
+                    if (countArray[i][j][x] < 4 && countArray[i][j][x] != 0) {
+                        pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp"
                     } else {
-                        if (countArray[i][j][x] > 0) {
-                            pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp"
-                        }
-                        else{
-                            pencilMarkArray[j + 1][i + 1][x] = x;
-                        }
+                        pencilMarkArray[j + 1][i + 1][x] = x;
                     }
                 }
             }
         }
-        redrawTables()
-        console.log(countArray)
+    }
+    redrawTables()
+    if (countArray[id.charAt(0)][id.charAt(1)][value] > 3) {
+        document.getElementById("i" + id.charAt(0) + id.charAt(1)).value = "";
+        var audio;
+        audio = new Audio('wrong.wav');
+        audio.play();
+        change("00")
+    }
 }
 
 var pencilMarkArray = []
@@ -149,7 +140,7 @@ function fillTable(boxId, type) {
                     if (type == "input") {
                         var x = document.createElement("INPUT");
                         x.setAttribute("type", "number");
-                        x.setAttribute("value","")
+                        x.setAttribute("value", "")
                         x.setAttribute("onkeydown", "limit(this)")
                         x.setAttribute("onkeyup", "limit(this)")
                         x.setAttribute("id", "i" + (rowNum - 1) + (colNum - 1));
