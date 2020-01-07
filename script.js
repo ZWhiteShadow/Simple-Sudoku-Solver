@@ -1,98 +1,84 @@
-function limit(element) {
+function limit(element, add, color) {
     var max_chars = 1;
     if (element.value.length > max_chars) {
         element.value = element.value.substr(0, max_chars);
+        return
     }
-    if (element.value == 0) { //Don't accept 0!
-        //element.value = "";
+    if (element.value == 0 || element.value == "") { //Don't accept 0!
+        element.value = "";
+        return
     }
-    change(element.id.substr(1), element.value);
+    var idString = element.id.substr(1)
+    change(idString, idString.charAt(0), idString.charAt(1), element.value, add, color);
 }
 
-function change(id, value) {
+var countArray = []
+for (i = 0; i < 9; i++) {
+    countArray[i] = [];
+    for (j = 0; j < 9; j++) {
+        countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    }
+}
 
-    var countArray = []
-    for (i = 0; i < 9; i++) {
-        countArray[i] = [];
-        for (j = 0; j < 9; j++) {
-            countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+function change(id, row, col, testNum, add, color) {
+
+    countArray[row][col][0] += (+document.getElementById("i" + row + col).value * add);
+
+    for (x = 0; x < 9; x++) {
+
+        document.getElementById("b" + row + x + testNum).style.color = color;
+        countArray[row][x][testNum] += add
+        if (add == 1) {
+            pencilMarkArray[+row][x][testNum] = 0
+        } else {
+            pencilMarkArray[+row][x][testNum] = testNum;
         }
+
+        document.getElementById("b" + x + col + testNum).style.color = color;
+        countArray[x][col][testNum] += add
+        if (add == 1) {
+            pencilMarkArray[x][+col][testNum] = 0
+        } else {
+            pencilMarkArray[x][+col][testNum] = testNum;
+        }
+
     }
 
-    //save inputed numbers into an array
-    for (i = 0; i < 9; i++) {
-        for (j = 0; j < 9; j++) {
-            countArray[i][j][0] = document.getElementById("i" + i + j).value;
-        }
+    var boxRow = 0,
+        boxCol = 0;
+
+    if (row > 2) {
+        boxRow = 3;
     }
+    if (row > 5) {
+        boxRow = 6;
+    }
+    if (col > 2) {
+        boxCol = 3;
+    }
+    if (col > 5) {
+        boxCol = 6;
+    }
+    for (x = 0; x < 3; x++) {
+        for (y = 0; y < 3; y++) {
+            countArray[x + boxRow][y + boxCol][testNum] += add;
+            document.getElementById("b" + (x + boxRow) + (y + boxCol) + testNum).style.color = color;
 
-    for (testNum = 1; testNum < 10; testNum++) {
-        for (row = 0; row < 9; row++) {
-            for (col = 0; col < 9; col++) {
-
-                if (countArray[row][col][0] == testNum) {
-                    for (x = 0; x < 9; x++) {
-                        countArray[row][x][testNum] += 1
-                    }
-                }
-
-                if (countArray[row][col][0] == testNum) {
-                    for (x = 0; x < 9; x++) {
-                        countArray[x][col][testNum] += 1
-                    }
-
-                }
-
-                var boxRow = 0,
-                    boxCol = 0;
-
-                if (row > 2) {
-                    boxRow = 3;
-                }
-                if (row > 5) {
-                    boxRow = 6;
-                }
-                if (col > 2) {
-                    boxCol = 3;
-                }
-                if (col > 5) {
-                    boxCol = 6;
-                }
-                if (countArray[row][col][0] == testNum) {
-                    for (x = 0; x < 3; x++) {
-                        for (y = 0; y < 3; y++) {
-                            countArray[x + boxRow][y + boxCol][testNum] += 1;
-                        }
-                    }
-
-                }
+            if (add == 1) {
+                pencilMarkArray[x + boxRow][y + boxCol][testNum] = 0
+            } else {
+                pencilMarkArray[x + boxRow][y + boxCol][testNum] = testNum;
             }
         }
     }
 
-    for (i = 0; i < 9; i++) {
-        for (j = 0; j < 9; j++) {
-            countArray[i][j][0] = document.getElementById("i" + i + j).value;
-            for (x = 1; x < 10; x++) {
-                if (countArray[i][j][countArray[i][j][0]] == 3)  {
-                    pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp";
-                } else {
-                    if (countArray[i][j][x] < 4 && countArray[i][j][x] != 0) {
-                        pencilMarkArray[j + 1][i + 1][x] = "&nbsp&nbsp"
-                    } else {
-                        pencilMarkArray[j + 1][i + 1][x] = x;
-                    }
-                }
-            }
-        }
-    }
-    redrawTables()
-    if (countArray[id.charAt(0)][id.charAt(1)][value] > 3) {
+    if (countArray[row][col][testNum] > 3) {
+        change(id, row, col, testNum, -1, "white")
         document.getElementById("i" + id.charAt(0) + id.charAt(1)).value = "";
         var audio;
         audio = new Audio('wrong.wav');
         audio.play();
-        change("00")
+        return;
     }
 }
 
@@ -103,7 +89,6 @@ for (i = 0; i < 10; i++) {
         pencilMarkArray[i].push([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
     }
 }
-
 
 // Create Overall Table
 function baseTable(baseId, boxId) {
@@ -141,14 +126,13 @@ function fillTable(boxId, type) {
                         var x = document.createElement("INPUT");
                         x.setAttribute("type", "number");
                         x.setAttribute("value", "")
-                        x.setAttribute("onkeydown", "limit(this)")
-                        x.setAttribute("onkeyup", "limit(this)")
+                        x.setAttribute("onkeyup", "limit(this, 1, \'white\' )")
+                        x.setAttribute("onkeydown", "limit(this, -1, \'black\' )")
                         x.setAttribute("id", "i" + (rowNum - 1) + (colNum - 1));
                         row.appendChild(x);
                     } else if (type == "text") {
                         col.setAttribute("id", "" + (rowNum - 1) + (colNum - 1));
                     }
-
                     row.appendChild(col);
                 }
                 table.appendChild(row);
@@ -202,6 +186,7 @@ function redrawTables() {
     baseTable("pencilMarks", 1);
     fillTable(1, "text");
     pencilMarks();
+
 }
 
 redrawTables();
