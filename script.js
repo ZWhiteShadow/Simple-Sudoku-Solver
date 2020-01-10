@@ -1,47 +1,79 @@
+$(document).ready(function () {
+    $("input").keydown(function (event) {
+        switch (event.originalEvent.key) {
+            case ".":
+                event.preventDefault();
+        }
+    });
+});
+
 function limit(element, add, color) {
     var max_chars = 1;
     if (element.value.length > max_chars) {
         element.value = element.value.substr(0, max_chars);
-        return
     }
     if (element.value == 0 || element.value == "") { //Don't accept 0!
         element.value = "";
         return
     }
     var idString = element.id.substr(1)
-    change(idString, idString.charAt(0), idString.charAt(1), element.value, add, color);
+    change(+idString.charAt(0), +idString.charAt(1), element.value, add, color);
 }
 
 var countArray = []
 for (i = 0; i < 9; i++) {
     countArray[i] = [];
     for (j = 0; j < 9; j++) {
-        countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        countArray[i].push([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     }
 }
 
-function change(id, row, col, testNum, add, color) {
+var pencilMarkArray = []
+for (i = 0; i < 9; i++) {
+    pencilMarkArray[i] = [];
+    for (j = 0; j < 9; j++) {
+        pencilMarkArray[i].push([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    }
+}
 
-    countArray[row][col][0] += (+document.getElementById("i" + row + col).value * add);
+function change(row, col, testNum, add, color) {
+
+    function error() {
+        document.getElementById("i" + row + col).value = "";
+        var audio;
+        audio = new Audio('wrong.wav');
+        audio.play();
+        return;
+    }
+
+    if (pencilMarkArray[row][col][testNum] == 0 && add == 1) {
+        error()
+    }
+
+    countArray[row][col][0] += (+testNum * add);
 
     for (x = 0; x < 9; x++) {
 
-        document.getElementById("b" + row + x + testNum).style.color = color;
         countArray[row][x][testNum] += add
+
         if (add == 1) {
-            pencilMarkArray[+row][x][testNum] = 0
-        } else {
-            pencilMarkArray[+row][x][testNum] = testNum;
+            pencilMarkArray[row][x][testNum] = 0 //color white
+            document.getElementById("b" + row + x + testNum).style.color = color;
+        } else if (add == -1 && countArray[row][x][0] == 0) {
+            pencilMarkArray[row][x][testNum] = testNum;
+            document.getElementById("b" + row + x + testNum).style.color = color;
         }
 
-        document.getElementById("b" + x + col + testNum).style.color = color;
         countArray[x][col][testNum] += add
-        if (add == 1) {
-            pencilMarkArray[x][+col][testNum] = 0
-        } else {
-            pencilMarkArray[x][+col][testNum] = testNum;
-        }
 
+        if (add == 1) {
+            pencilMarkArray[x][col][testNum] = 0 //color white
+            document.getElementById("b" + x + col + testNum).style.color = color;
+
+        } else if (add == -1 && countArray[x][col][0] == 0) {
+            pencilMarkArray[x][col][testNum] = testNum; // color back
+            document.getElementById("b" + x + col + testNum).style.color = color;
+        } 
     }
 
     var boxRow = 0,
@@ -61,33 +93,33 @@ function change(id, row, col, testNum, add, color) {
     }
     for (x = 0; x < 3; x++) {
         for (y = 0; y < 3; y++) {
+
             countArray[x + boxRow][y + boxCol][testNum] += add;
-            document.getElementById("b" + (x + boxRow) + (y + boxCol) + testNum).style.color = color;
 
             if (add == 1) {
                 pencilMarkArray[x + boxRow][y + boxCol][testNum] = 0
-            } else {
+                document.getElementById("b" + (x + boxRow) + (y + boxCol) + testNum).style.color = color;
+
+            } else if (add == -1 && countArray[x + boxRow][y + boxCol][0] == 0) {
                 pencilMarkArray[x + boxRow][y + boxCol][testNum] = testNum;
+                document.getElementById("b" + (x + boxRow) + (y + boxCol) + testNum).style.color = color;
             }
         }
     }
 
-    if (countArray[row][col][testNum] > 3) {
-        change(id, row, col, testNum, -1, "white")
-        document.getElementById("i" + id.charAt(0) + id.charAt(1)).value = "";
-        var audio;
-        audio = new Audio('wrong.wav');
-        audio.play();
-        return;
+    for (x = 1; x < 10; x++) {
+        if (add == 1) {
+            document.getElementById("b" + row + col + x).style.color = color
+            pencilMarkArray[row][col][x] = 0
+        } else if (add == -1 && countArray[row][col][x] == 0) {
+            document.getElementById("b" + row + col + x).style.color = color
+            pencilMarkArray[row][col][x] = x;
+        }
     }
-}
-
-var pencilMarkArray = []
-for (i = 0; i < 10; i++) {
-    pencilMarkArray.push([0]);
-    for (j = 0; j < 9; j++) {
-        pencilMarkArray[i].push([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    if (add != 0) {
+        change(row, col, testNum, 0, color)
     }
+    console.log(pencilMarkArray)
 }
 
 // Create Overall Table
@@ -168,8 +200,8 @@ function pencilMarks() {
                 for (var z = 0; z < 3; z++) { // 3 Across
                     totalBox++;
                     var col = document.createElement("td");
-                    col.innerHTML = "&nbsp" + pencilMarkArray[j + 1][i + 1][totalBox] + "&nbsp";
-                    col.setAttribute("id", "b" + i + j + pencilMarkArray[j + 1][i + 1][totalBox]);
+                    col.innerHTML = "&nbsp" + totalBox + "&nbsp";
+                    col.setAttribute("id", "b" + i + j + totalBox);
                     row.appendChild(col);
                 }
                 table.appendChild(row);
