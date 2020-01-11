@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $("input").keydown(function (event) {
         switch (event.originalEvent.key) {
-            case ".":
+            case ".": case "0":
                 event.preventDefault();
         }
     });
@@ -12,7 +12,7 @@ function limit(element, add, color) {
     if (element.value.length > max_chars) {
         element.value = element.value.substr(0, max_chars);
     }
-    if (element.value == 0 || element.value == "") { //Don't accept 0!
+    if (element.value == "") { //Don't accept 0!
         element.value = "";
         return
     }
@@ -43,11 +43,11 @@ function change(row, col, testNum, add, color) {
         var audio;
         audio = new Audio('wrong.wav');
         audio.play();
-        return;
     }
 
     if (pencilMarkArray[row][col][testNum] == 0 && add == 1) {
         error()
+        return;
     }
 
     countArray[row][col][0] += (+testNum * add);
@@ -119,7 +119,6 @@ function change(row, col, testNum, add, color) {
     if (add != 0) {
         change(row, col, testNum, 0, color)
     }
-    console.log(pencilMarkArray)
 }
 
 // Create Overall Table
@@ -140,8 +139,7 @@ function baseTable(baseId, boxId) {
 function fillTable(boxId, type) {
 
     let colNum = 0,
-        rowNum = 0,
-        pencilMarkNum = 0;
+        rowNum = 0;
 
     for (var a = 1; a < 4; a++) { //Select which boxes to work on 
         for (var c = 0; c < 3; c++) { //Three rows at at time
