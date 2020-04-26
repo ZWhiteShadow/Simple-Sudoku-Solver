@@ -1,11 +1,6 @@
 # Simple-Sudoku-Solver
 
-Displays red errors for duplicate
-numbers in rows, columns, and boxes.
-
+Doesn't allow incorect numbers.
 Shows Pencil Marks for Sudoku Puzzles!
-
-Also uses basic solving techniques 
-to find some solutions.
 
 Try me: https://bit.ly/35nbvYa
